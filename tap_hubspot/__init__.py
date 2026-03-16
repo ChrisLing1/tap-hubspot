@@ -188,7 +188,6 @@ def get_abs_path(path):
 
 def load_associated_company_schema():
     associated_company_schema = load_schema("companies")
-    #pylint: disable=line-too-long
     associated_company_schema['properties']['company-id'] = associated_company_schema['properties'].pop('companyId')
     associated_company_schema['properties']['portal-id'] = associated_company_schema['properties'].pop('portalId')
     return associated_company_schema
@@ -220,7 +219,6 @@ def load_schema(entity_name):
 
     return schema
 
-#pylint: disable=invalid-name
 def acquire_access_token_from_refresh_token():
     payload = {
         "grant_type": "refresh_token",
@@ -436,7 +434,6 @@ def get_v3_deals(v3_fields, v1_data):
     v3_resp = post_search_endpoint(v3_url, v3_body)
     return v3_resp.json()['results']
 
-#pylint: disable=line-too-long
 def gen_request(STATE, tap_stream_id, url, params, path, more_key, offset_keys, offset_targets, v3_fields=None):
     # all our sync cases provide the same offset_keys and offset_targets, no need to check the valueError here
     if len(offset_keys) != len(offset_targets):
@@ -521,7 +518,7 @@ def sync_contacts(STATE, ctx):
             modified_time = None
             if bookmark_key in row:
                 modified_time = utils.strptime_with_tz(
-                    _transform_datetime( # pylint: disable=protected-access
+                    _transform_datetime(
                         row[bookmark_key],
                         UNIX_MILLISECONDS_INTEGER_DATETIME_PARSING))
 
@@ -792,7 +789,7 @@ def sync_entity_chunked(STATE, catalog, entity_name, key_properties, path):
                         STATE = singer.clear_offset(STATE, entity_name)
                         singer.write_state(STATE)
                         break
-            STATE = singer.write_bookmark(STATE, entity_name, 'startTimestamp', utils.strftime(datetime.datetime.fromtimestamp((start_ts / 1000), datetime.timezone.utc ))) # pylint: disable=line-too-long
+            STATE = singer.write_bookmark(STATE, entity_name, 'startTimestamp', utils.strftime(datetime.datetime.fromtimestamp((start_ts / 1000), datetime.timezone.utc )))
             singer.write_state(STATE)
             start_ts = end_ts
 
@@ -993,7 +990,7 @@ def sync_contact_list_contacts(STATE, ctx):
             modified_time = None
             if bookmark_key in row:
                 modified_time = utils.strptime_with_tz(
-                    _transform_datetime( # pylint: disable=protected-access
+                    _transform_datetime(
                         row[bookmark_key],
                         UNIX_MILLISECONDS_INTEGER_DATETIME_PARSING))
 
@@ -1140,7 +1137,7 @@ def do_sync(STATE, catalog):
         singer.write_state(STATE)
 
         try:
-            STATE = stream.sync(STATE, ctx) # pylint: disable=not-callable
+            STATE = stream.sync(STATE, ctx)
         except SourceUnavailableException as ex:
             error_message = str(ex).replace(CONFIG['access_token'], 10 * '*')
             LOGGER.error(error_message)
